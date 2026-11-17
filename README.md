@@ -19,7 +19,7 @@ it works on the author's computer, it has rough edges, and nobody is on call for
 | | |
 |---|---|
 | Computer | Windows 11 (or 10 21H2+) with WSL2 and Ubuntu |
-| Graphics card | **NVIDIA with 16 GB of video memory**, and a current driver (CUDA 12.8). Developed and tested on an RTX 5080 only. AMD and Intel cards are not supported |
+| Graphics card | **NVIDIA with 16 GB of video memory** recommended, and a current driver (CUDA 12.8). Developed on an RTX 5080; also runs on a 12 GB RTX 3060 with little room to spare (see [docs/GPU_12GB_NOTES.md](docs/GPU_12GB_NOTES.md)). AMD and Intel cards are not supported |
 | Memory and disk | About 16 GB of RAM for WSL, and about **60 GB free** (the AI models take about 34 GB) |
 | Blender | 5.2, on Windows |
 | Time | 1-2 hours for the first install, mostly downloads |
@@ -76,8 +76,9 @@ The add-on's reference is [blender/afv_addon/README.md](blender/afv_addon/README
 
 - **A take imported inside the shot browser's own .blend file doesn't play.** Open results in a new
   file instead (File > New, then AFV > Import take).
-- Tested on one computer. Other NVIDIA cards with 16 GB should work, but the install's CUDA build steps
-  have not been tried on them.
+- Tested on two computers: an RTX 5080 (16 GB) and an RTX 3060 (12 GB, see
+  [docs/GPU_12GB_NOTES.md](docs/GPU_12GB_NOTES.md)). Other NVIDIA cards should work, but the install's CUDA build
+  steps have not been tried on them.
 - The installers fetch the newest version of each model's code, which can change. The versions afv was
   tested with are recorded in `install/tested_versions/`.
 - It expects two fighters who are mostly visible. Clinches, heavy occlusion, zooming cameras and very

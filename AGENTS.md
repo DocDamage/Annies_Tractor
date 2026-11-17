@@ -66,7 +66,8 @@ Terms used below:
   - Never start a background job *through* wsl.exe (it outlives the call). To run something long,
     run the `wsl` call itself in the background with your tool's background option.
   - Delete scratch scripts or keep them out of the repo.
-- **GPU:** developed on one GPU with 16 GB VRAM (RTX 5080) and about 15 GB RAM in WSL. The GPU lock is `~/afv/.gpu.lock`.
+- **GPU:** developed on one GPU with 16 GB VRAM (RTX 5080) and about 15 GB RAM in WSL; also measured on a 12 GB
+  RTX 3060 (`docs/GPU_12GB_NOTES.md`, `tools/gpu_profile.py`). The GPU lock is `~/afv/.gpu.lock`.
   - `afv` commands and pytest (`gpu`-marked tests, golden tests) take the lock themselves.
     **Never wrap them in `flock`**: their lock waits on a separate file handle with no time limit,
     so an outer `flock` deadlocks them.
