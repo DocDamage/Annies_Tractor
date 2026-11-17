@@ -92,6 +92,8 @@ This is the developer edition: besides the tool it has the test suite (`tests/`)
 and development notes (`docs/`), and the guides the author's AI agents worked from (`CLAUDE.md`,
 `AGENTS.md`). It is a snapshot: the earlier git history is not published.
 
+- **Roadmap:** [docs/ROADMAP.md](docs/ROADMAP.md) lists suggested fixes and new features, with
+  priorities.
 - **Start here:** `AGENTS.md` (how the code is laid out, how to run things, the rules every change
   follows), then `docs/ROUND6_NOTES.md`, whose "Open for round 7" list is where the author stopped.
   `docs/BUILD_PLAN.md` has the architecture and file formats; `docs/SPEC.md` is the design document.
