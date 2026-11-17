@@ -37,7 +37,7 @@ Run these checks and show the user the table. Hard requirements must pass before
 |---|---|---|---|
 | Windows | PowerShell: `[System.Environment]::OSVersion.Version`, `winver` | Windows 11 (or 10 21H2+) | GPU in WSL needs this |
 | WSL2 + Ubuntu | PowerShell: `wsl -l -v` | a distro named `Ubuntu`, VERSION 2 | Another name works: set it in the add-on preferences later |
-| NVIDIA GPU | `nvidia-smi --query-gpu=name,memory.total,driver_version,compute_cap --format=csv` | NVIDIA, **16 GB VRAM** | The camera stage peaks at ~14.8 GB. AMD / Intel GPUs are not supported |
+| NVIDIA GPU | `nvidia-smi --query-gpu=name,memory.total,driver_version,compute_cap --format=csv` | NVIDIA, **16 GB VRAM** (12 GB works) | The camera stage peaked at ~14.8 GB on 16 GB and at 11.7 GB on a 12 GB RTX 3060, with `--camera background` as the fallback: `docs/GPU_12GB_NOTES.md`. AMD / Intel GPUs are not supported |
 | Driver supports CUDA 12.8 | `nvidia-smi` header: "CUDA Version" | 12.8 or higher | Update the **Windows** NVIDIA driver; never install a driver inside WSL |
 | GPU compute capability | the `compute_cap` column above (e.g. `12.0` RTX 50, `8.9` RTX 40, `8.6` RTX 30) | note it | The installers read it themselves; tested on `12.0` only |
 | WSL memory | `free -g` | ~14 GB or more total | Raise it in `%UserProfile%\.wslconfig` (`[wsl2]` `memory=16GB`), then `wsl --shutdown` |
@@ -48,7 +48,7 @@ Run these checks and show the user the table. Hard requirements must pass before
 | Internet | `curl -sI https://huggingface.co` | reachable | ~30 GB of downloads in Phase 2 |
 
 If a hard requirement fails, stop and tell the user plainly what to change (for example "this GPU has
-8 GB; afv needs 16 GB") and what the options are. Do not install anything to work around a GPU that is
+8 GB; afv needs 12 GB, better 16") and what the options are. Do not install anything to work around a GPU that is
 too small.
 
 Already installed? If `~/afv/afv-env/bin/afv` exists, run `~/afv/afv-env/bin/afv models --check` (from
