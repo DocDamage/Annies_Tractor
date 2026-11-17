@@ -4,6 +4,7 @@
 set -euo pipefail
 REPO="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 export PATH="$HOME/.local/bin:$PATH"
+export UV_HTTP_TIMEOUT="${UV_HTTP_TIMEOUT:-600}"  # uv's 30 s default times out on slow links
 command -v uv >/dev/null || curl -LsSf https://astral.sh/uv/install.sh | sh
 mkdir -p "$HOME/afv"
 cd "$HOME/afv"
