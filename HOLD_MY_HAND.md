@@ -188,7 +188,10 @@ When the user has seen their fighters move, ask what was confusing and note it f
 | "cannot map ... to a WSL path" | An old add-on build: rebuild and reinstall it (Phase 3); the Project folder field takes a plain name now |
 | The panel says the worker can't start / afv not found | Preferences: WSL distribution name and `~/afv/afv-env/bin/afv` (Phase 3) |
 | Waiting "for the GPU" | Another afv job holds the GPU (one at a time, by design); it continues when that ends |
-| CUDA out of memory in the camera stage | Close other GPU programs (games, browsers with video); 16 GB is the floor |
+| CUDA out of memory in the camera stage | Close other GPU programs (games, browsers with video, local LLMs). On a 12 GB RTX 3060 an 8 s shot peaked at 11.0 GB with ViPE; `--camera background` peaked at 4.8 GB (GEM-X) |
+| `Failed to download distribution due to network timeout` during an installer | A slow link: the installers wait 600 s per download (`UV_HTTP_TIMEOUT`); raise it and re-run the same installer |
+| `pyconfig.h: No such file or directory` building ViPE or SAM 2 | A venv on the system Python: the installers now use uv's own Python and rebuild such a venv; re-run the installer |
+| `ffmpeg 6.1.1 at /usr/bin/ffmpeg, expected 7.0.2` | Re-run `install_gemx.sh`: it puts the static 7.0.2 build in `~/.local/bin`, which afv uses even when a system ffmpeg exists |
 | `torch ... available False` | Windows driver too old for CUDA 12.8, or WSL not restarted after the update (`wsl --shutdown`) |
 | A run stops with exit 3 | A shot needs fighters picked (`needs_pick`) or a tracking review (`needs_review`): see `WORKFLOW.md` |
 | "edits/... .json: ... (fix or delete that entry ...)" | A hand-edited edit file has a bad value; fix or delete that entry |

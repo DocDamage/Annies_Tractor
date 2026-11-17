@@ -3,9 +3,16 @@
 # Safe to re-run. Run install_vipe.sh first: its conda env builds SAM 2's small CUDA extension.
 set -euo pipefail
 export PATH="$HOME/.local/bin:$PATH"
+export UV_HTTP_TIMEOUT="${UV_HTTP_TIMEOUT:-600}"  # torch wheels are ~0.9 GB; uv's 30 s default times out on slow links
+# SAM 2's extension is compiled by the conda env's gcc, which cannot see the system Python's headers
+# (see install_vipe.sh), so the venv uses uv's own Python.
+export UV_PYTHON_PREFERENCE=only-managed
 ENV="$HOME/afv/track"; mkdir -p "$ENV/weights"; cd "$ENV"
 log() { echo "[$(date +%H:%M:%S)] $*"; }
 ARCH="${AFV_CUDA_ARCH:-$(nvidia-smi --query-gpu=compute_cap --format=csv,noheader | head -1 | tr -d ' ')}"  # e.g. 12.0 (RTX 50), 8.9 (RTX 40), 8.6 (RTX 30)
+if [ -e .venv/bin/python ] && [[ "$(readlink -f .venv/bin/python)" != "$(uv python dir)"/* ]]; then
+  log "removing .venv built on the system Python"; rm -rf .venv sam2/sam2/_C.so
+fi
 [ -d .venv ] || uv venv .venv --python 3.12
 source .venv/bin/activate
 log "torch cu128"

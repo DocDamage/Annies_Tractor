@@ -7,6 +7,7 @@ GEMX="$ROOT/gem-x"
 BIN="$HOME/.local/bin"
 mkdir -p "$ROOT" "$BIN"
 export PATH="$BIN:$PATH"
+export UV_HTTP_TIMEOUT="${UV_HTTP_TIMEOUT:-600}"  # torch wheels are ~0.9 GB; uv's 30 s default times out on slow links
 log() { echo "[$(date +%H:%M:%S)] $*"; }
 
 log "uv"
@@ -14,14 +15,24 @@ command -v uv >/dev/null || curl -LsSf https://astral.sh/uv/install.sh | sh
 command -v uv
 
 log "ffmpeg (static build, user space)"
-if ! command -v ffprobe >/dev/null; then
+# afv uses the ffmpeg in ~/.local/bin (or $AFV_FFMPEG_DIR), not the one on PATH, and requires this exact
+# version (afv/media/ffmpeg.py EXPECTED_VERSION). Check that copy: a system ffmpeg (Ubuntu 24.04 ships
+# 6.1.1) must not make this step skip.
+FFMPEG_VERSION=7.0.2
+ffv() { "$BIN/ffmpeg" -version 2>/dev/null | head -1 | awk '{print $3}' | sed 's/-.*//' || true; }
+if [ "$(ffv)" != "$FFMPEG_VERSION" ] || [ ! -x "$BIN/ffprobe" ]; then
   tmp=$(mktemp -d)
   curl -fsSL https://johnvansickle.com/ffmpeg/releases/ffmpeg-release-amd64-static.tar.xz -o "$tmp/ff.tar.xz"
   tar -xf "$tmp/ff.tar.xz" -C "$tmp"
   cp "$tmp"/ffmpeg-*-static/ffmpeg "$tmp"/ffmpeg-*-static/ffprobe "$BIN/"
   rm -rf "$tmp"
+  if [ "$(ffv)" != "$FFMPEG_VERSION" ]; then
+    echo "ffmpeg: the static release is now $(ffv), afv expects $FFMPEG_VERSION. Put a $FFMPEG_VERSION build" \
+      "(ffmpeg and ffprobe) in $BIN, or change EXPECTED_VERSION in src/afv/media/ffmpeg.py deliberately." >&2
+    exit 1
+  fi
 fi
-ffmpeg -version | head -1
+"$BIN/ffmpeg" -version | head -1
 
 log "GEM-X checkout"
 [ -d "$GEMX/.git" ] || git clone https://github.com/NVlabs/GEM-X.git "$GEMX"
